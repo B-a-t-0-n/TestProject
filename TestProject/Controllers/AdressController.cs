@@ -2,6 +2,7 @@ using Dadata.Model;
 using Dadata;
 using Microsoft.AspNetCore.Mvc;
 using TestProject.Model.Dto;
+using AutoMapper;
 
 namespace TestProject.Controllers
 {
@@ -9,11 +10,13 @@ namespace TestProject.Controllers
     [Route("[controller]")]
     public class AdressController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly ILogger<AdressController> _logger;
 
-        public AdressController(ILogger<AdressController> logger)
+        public AdressController(ILogger<AdressController> logger, IMapper mapper)
         {
             _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -35,7 +38,9 @@ namespace TestProject.Controllers
             var api = new CleanClientAsync(token, secret);
             var result = await api.Clean<Address>(Adress);
             
-            return Ok(result);
+            var model = _mapper.Map<AddressDto>(result);
+
+            return Ok(model);
         }
     }
 }
